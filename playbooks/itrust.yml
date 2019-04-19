@@ -1,7 +1,7 @@
 ---
 - hosts: all
   vars:
-    - itrust_folder: "/home/{{ ansible_user }}/iTrust2-v4"
+    - iTrust_folder: "/home/{{ ansible_user }}/iTrust2-v4"
   tasks: 
 
   - name: clone iTrust2
@@ -95,7 +95,7 @@
     become_user: root
     shell: mvn process-test-classes
     args:
-      chdir: "{{itrust_folder}}/iTrust2/"
+      chdir: "{{iTrust_folder}}/iTrust2/"
   
   - name: Run test to verify iTrust Build
     become: true
@@ -109,4 +109,4 @@
     become_user: root
     shell: nohup bash -c "sudo mvn jetty:run" &
     args:
-      chdir: "{{itrust_folder}}/iTrust2/"
+      chdir: "{{iTrust_folder}}/iTrust2/"
