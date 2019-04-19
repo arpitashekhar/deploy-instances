@@ -89,18 +89,20 @@
       state: latest 
       update_cache: yes 
       cache_valid_time: 3600
+  
+  - include: redis.yml
+
+  - name: Update Jedis changes in iTrust
+    copy: 
+      src: "/home/{{ansible_user}}/deploy-instances/templates/APIPasswordController.java"
+      dest: "/home/{{ansible_user}}/iTrust2-v4/iTrust2/src/main/java/edu/ncsu/csc/itrust2/controllers/api/APIPasswordController.java"
+      force: yes
+    become: true
 
   - name: Run process-test-classes
     become: true
     become_user: root
     shell: mvn process-test-classes
-    args:
-      chdir: "{{iTrust_folder}}/iTrust2/"
-  
-  - name: Run test to verify iTrust Build
-    become: true
-    become_user: root
-    shell: mvn clean test verify checkstyle:checkstyle
     args:
       chdir: "{{iTrust_folder}}/iTrust2/"
 
