@@ -61,7 +61,7 @@
     # Establish chromedriver up-start service
     - name: Copy upstart service config file
       template:
-        src: "/home/{{ansible-user}}/deploy-instances/templates/chromedriver.conf.j2"
+        src: "/home/{{ansible_user}}/deploy-instances/templates/chromedriver.conf.j2"
         dest: "/etc/init/chromedriver.conf"
         mode: 0644
 
