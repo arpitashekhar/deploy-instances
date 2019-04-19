@@ -1,33 +1,31 @@
 ---
-- hosts: all
+- name: Update system
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
 
-  tasks:
-    - name: Update system
-      become: true
-      apt:
-        upgrade: yes
-        update_cache: yes
-        cache_valid_time: 86400
+- name: Install packages 
+  become: true
+  command: apt install -y make gcc libc6-dev tcl
 
-    - name: Install packages 
-      become: true
-      command: apt install -y make gcc libc6-dev tcl
+- name: wget redis 
+  become: true
+  get_url:
+    url: http://download.redis.io/redis-stable.tar.gz
+    dest: /etc
+    mode: 0777
 
-    - name: wget redis 
-      become: true
-      get_url:
-        url: http://download.redis.io/redis-stable.tar.gz
-        dest: /etc
-        mode: 0777
+- name: unarchive redis
+  become: true
+  unarchive:
+    src: /etc/redis-stable.tar.gz
+    dest: /etc
+    remote_src: true
 
-    - name: unarchive redis
-      become: true
-      unarchive:
-        src: /etc/redis-stable.tar.gz
-        dest: /etc
-
-    - name: install redis
-      become: true
-      command: make install 
-      args:
-        chdir: /etc/redis-stable
+- name: install redis
+  become: true
+  command: make install 
+  args:
+    chdir: /etc/redis-stable
