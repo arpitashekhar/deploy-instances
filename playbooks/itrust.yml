@@ -106,9 +106,9 @@
     args:
       chdir: "{{iTrust_folder}}/iTrust2/"
 
-  - name: Check if iTrust is running in port 8080
-    become: true
-    become_user: root
-    shell: nohup bash -c "sudo mvn jetty:run" &
-    args:
-      chdir: "{{iTrust_folder}}/iTrust2/"
+ # - name: Check if iTrust is running in port 8080
+ #   become: true
+ #   become_user: root
+ #   shell: nohup bash -c "sudo mvn jetty:run" &
+ #   args:
+ #     chdir: "{{iTrust_folder}}/iTrust2/"
