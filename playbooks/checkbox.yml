@@ -13,22 +13,18 @@
   tasks:
   - name: Install node on server
     become: true
+    shell: curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+
+  - name: Install node on server
+    become: true
     apt:
         name: nodejs
-        update_cache: yes
 
   - name: Install npm on server
     become: true
     apt:
-        name: npm
+        pkg: build-essential
         state: present
-
-  - name: Symlink nodejs and node
-    become: true
-    file:
-        src: /usr/bin/nodejs
-        dest: /usr/bin/node
-        state: link
 
   - name: Installing Python pip
     become: true
@@ -113,6 +109,11 @@
     args:
       chdir: "/home/{{ ansible_user }}/checkbox.io/server-side/site"
 
+  - name: Install packages for New Relic 
+    become: true
+    command: npm install newrelic --save
+    args: 
+      chdir: "/home/{{ ansible_user }}/checkbox.io/server-side/site" 
 
   - name: update location of public_html into default
     become: true
@@ -136,6 +137,20 @@
         dest: "/etc/nginx/nginx.conf"
         remote_src: true
         mode: 0644
+
+  - name: Transfer newrelic.js template
+    become: true
+    template:
+      src: "/home/{{ ansible_user }}/deploy-instances/templates/newrelic.js"
+      dest: "{{checkbox_folder}}/server-side/site/newrelic.js"
+      force: yes
+
+  # - name: line insert
+  #   become: true
+  #   lineinfile:
+  #     path: "{{checkbox_folder}}/server-side/site/server.js"
+  #     line: require('newrelic');
+  #     insertbefore: BOF
 
   - name: Install forever (to run Node.js app)
     become: true
