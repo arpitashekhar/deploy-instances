@@ -64,8 +64,9 @@
         state: present
         update-cache: yes
         
-    # notify:
-    #     - start mongodb
+  - name: Set permissions for mongodb storage
+    file: path=/data/db owner=vagrant group=mongodb mode=0775 state=directory
+    become: yes
 
   - name: Install the pymongo package
     become: true
@@ -85,15 +86,17 @@
     mongodb_user:
         database: "admin"
         name: "admin"
-        password: "root"
+        password: "admin"
         roles: readWrite,dbAdmin
         state: present
-
-  # - name: Checking for already cloned checkbox repository
-  #   stat:
-  #       path: "{{checkbox_folder}}"
-  #   register: checkbox_repo
-
+        login_port: 27017
+  
+  - name: restart mongod service
+    service: 
+        name: mongod 
+        state: restarted
+    become: true
+  
   - name: Cloning checkbox repository
     become: true
     git:
@@ -145,13 +148,6 @@
       dest: "{{checkbox_folder}}/server-side/site/newrelic.js"
       force: yes
 
-  # - name: line insert
-  #   become: true
-  #   lineinfile:
-  #     path: "{{checkbox_folder}}/server-side/site/server.js"
-  #     line: require('newrelic');
-  #     insertbefore: BOF
-
   - name: Install forever (to run Node.js app)
     become: true
     npm: 
@@ -169,6 +165,8 @@
     become: true
     command: forever start {{checkbox_folder}}/server-side/site/server.js
     when: "forever_list.stdout.find('/home/{{ansible_user}}/checkbox.io/server-side/site/server.js') == -1"
+    args:
+        chdir: "/home/{{ ansible_user }}/checkbox.io/server-side/site"
 
   - name: Restart nginx
     become: true
