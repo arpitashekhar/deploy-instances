@@ -163,7 +163,7 @@
         
   - name: Start application
     become: true
-    command: forever start {{checkbox_folder}}/server-side/site/server.js
+    command: forever start server.js
     when: "forever_list.stdout.find('/home/{{ansible_user}}/checkbox.io/server-side/site/server.js') == -1"
     args:
         chdir: "/home/{{ ansible_user }}/checkbox.io/server-side/site"
