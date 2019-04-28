@@ -65,7 +65,7 @@
         update-cache: yes
         
   - name: Set permissions for mongodb storage
-    file: path=/data/db owner=vagrant group=mongodb mode=0775 state=directory
+    file: path=/data/db owner=ubuntu group=mongodb mode=0775 state=directory
     become: yes
 
   - name: Install the pymongo package
